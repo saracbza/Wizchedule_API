@@ -1,8 +1,9 @@
 import e, { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import Usuario from '../../models/Usuario' 
-import Token from '../../models/Token'
 import { emailInstitucional } from '../../utils/Utils'
+const jwt = require('jsonwebtoken')
+const SECRET = 'd4f4b4e1e6c2efc1f5b4c9a5e6a8e11d908b7cf4a2d7e93a6f5f8e4d2b5d1a8c'
 
 export default class AuthController{
 
@@ -45,33 +46,13 @@ static async store (req: Request, res: Response){
 
         const usuario = await Usuario.findOneBy ({ email })
         if (!usuario) return res.status(401).json({error: "Usuário não encontrado"})
+        const idUsuario = usuario.id
 
-	       const senhaCheck = bcrypt.compareSync(senha, usuario.senha)
-	       if (!senhaCheck) return res.status(401).json({error: "Senha inválida"})
-	        
-	       await Token.delete({ usuario: { id: usuario.id } })
+	    const senhaCheck = bcrypt.compareSync(senha, usuario.senha)
+	    if (!senhaCheck) return res.status(401).json({error: "Senha inválida"})
 
-	       const token = new Token()
-        
-           const random = new Date().toString()
-	       const stringRand = new Date().toString() + bcrypt.hashSync(random, 1)
-	       token.token = bcrypt.hashSync(stringRand, 1).slice(-20)
-
-	       token.expiredAt = new Date (Date.now()+60*60*1000) //expirar token em 1 hora
-
-	       token.refreshToken = bcrypt.hashSync(stringRand+2, 1).slice(-20)
-
-	       token.usuario = usuario
-	       await token.save()
-
-	        //add o token em um cookie
-	       res.cookie('token', token.token, {httpOnly: true, secure: true, sameSite: 'none'})
-
-	       return res.json({
-           token: token.token,
-           expiredAt: token.expiredAt,
-           refreshToken: token.refreshToken
-        })	        
+	    const token = jwt.sign({idUsuario}, SECRET, { expiresIn: '1h'})
+        return res.json({ auth: true, token })
     }
 
     static async refresh (req: Request, res: Response) {
@@ -79,27 +60,6 @@ static async store (req: Request, res: Response){
     
         if (!authorization) return res.status(400).json({ error: 'O refresh token é obrigatório' })
     
-        const token = await Token.findOneBy({ refreshToken: authorization })
-        if (!token) return res.status(401).json({ error: 'Refresh token inválido' })
-    
-        if (token.expiredAt < new Date()) {
-          await token.remove()
-          return res.status(401).json({ error: 'Refresh token expirado' })
-        }
-    
-        token.token = bcrypt.hashSync(Math.random().toString(36), 1).slice(-20)
-        token.refreshToken = bcrypt.hashSync(Math.random().toString(36), 1).slice(-20)
-        token.expiredAt = new Date(Date.now() + 60 * 60 * 1000)
-        await token.save()
-
-        //add o token em um cookie
-        res.cookie('token', token.token, {httpOnly: true, secure: true, sameSite: 'none'})
-    
-        return res.json({
-          token: token.token,
-          expiresAt: token.expiredAt,
-          refreshToken: token.refreshToken
-        })
     }
 
     static async logout (req: Request, res: Response) {
