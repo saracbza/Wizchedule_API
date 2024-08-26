@@ -55,25 +55,12 @@ static async store (req: Request, res: Response){
         return res.json({ auth: true, token })
     }
 
-    static async refresh (req: Request, res: Response) {
-        const { authorization } = req.cookies
-    
-        if (!authorization) return res.status(400).json({ error: 'O refresh token é obrigatório' })
-    
-    }
-
     static async logout (req: Request, res: Response) {
-        const { token } = req.cookies
-        
-        if (!token) return res.status(400).json({ error: 'O token é obrigatório' })
-    
-        const usuarioToken = await Token.findOneBy({ token: token })
-        if (!usuarioToken) return res.status(401).json({ error: 'Token inválido' })
-    
-        await usuarioToken.remove()
+        const idUsuario = req.headers.userId
 
-        res.clearCookie('token')
+        const usuario = await Usuario.findOneBy ({ id: Number(idUsuario) })
+        res.removeHeader('x-access-token')
     
-        return res.status(204).json()
+        return res.status(204).json(`Usuário ${usuario} saiu`)
     }
 }
