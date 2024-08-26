@@ -1,19 +1,16 @@
-import e, { Request, Response } from 'express'
+import { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import Usuario from '../../models/Usuario' 
 import { emailInstitucional } from '../../utils/Utils'
 const jwt = require('jsonwebtoken')
 const SECRET = 'd4f4b4e1e6c2efc1f5b4c9a5e6a8e11d908b7cf4a2d7e93a6f5f8e4d2b5d1a8c'
 
-export default class AuthController{
+export default class AuthController {
 
 static async store (req: Request, res: Response){
-        const { nome,email,senha,curso,adm } = req.body 
-        //adm é o responsavel pelo cadastro de monitores e materias (so ele tera acesso as telas de cadastro)
-	    const validacao = adm ? true : false
-
-        if(!nome) return res.status(400).json({error: "Nome obrigatório!"})
+        const { nome, email, senha, curso, tipo } = req.body 
         
+        if(!nome || !tipo ) return res.status(400).json({error: "Nome e tipo obrigatórios!"})
         
         if(!email || !senha) return res.status(400).json({error: "Email e senha obrigatórios!"})
         if(!emailInstitucional(email)) return res.status(400).json({error: "Email inválido!"})
@@ -21,21 +18,20 @@ static async store (req: Request, res: Response){
         const usuarioCheck = await Usuario.findOneBy({ email })
         if (usuarioCheck) return res.status(400).json({ error: 'Email já cadastrado' })
         
-        if (!validacao) //aluno
+        if (tipo == "Aluno") //aluno
 	        if(!curso) return res.status(400).json({error: "Curso obrigatório"})
         
-        const monitor = "Monitoria"
 		const usuario = new Usuario()
 		usuario.nome = nome
 		usuario.email = email
 	    usuario.senha = bcrypt.hashSync(senha, 10)
-	    usuario.curso = curso ?? monitor
+	    usuario.curso = curso
 	    await usuario.save() 
 	        
 		return res.json({
 	       nome: usuario.nome,
 	       email: usuario.email,
-	       curso: usuario.curso
+	       curso: usuario.curso ?? ""
         }) 
 	      }
 

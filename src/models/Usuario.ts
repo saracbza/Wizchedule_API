@@ -18,8 +18,11 @@ export default class Usuario extends BaseEntity {
 	  senha!: string
 	  
 	  @Column()
-	  curso!: string
-	  
+	  curso?: string
+
+	  @Column()
+	  tipo!: string
+  
 	  @OneToMany(() => Monitoria, monitoria => monitoria.usuario)
 	  monitorias?: Monitoria[]
 	  

@@ -13,3 +13,11 @@ export function emailInstitucional(email: string): boolean {
     const padraoFatec = /^[^\s@]+@fatec\.sp\.gov\.br$/i;
     return padraoFatec.test(email);
   }
+
+//validar tipo de local
+export enum TipoLocal {
+    sala = "Sala",
+    lab = "Laboratório",
+    maker = "Espaço Maker",
+    biblio = "Biblioteca"
+}
