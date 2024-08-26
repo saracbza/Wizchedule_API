@@ -2,6 +2,7 @@ import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOn
 import Agendamento from './Agendamento'
 import Materia from './Materia'
 import Usuario from './Usuario'
+import Local from './Local'
 
 @Entity()
 export default class Monitoria extends BaseEntity {
@@ -17,9 +18,6 @@ export default class Monitoria extends BaseEntity {
 	  @Column({ length: 5 })
 	  horario_fim!: string //HH:MM
   
-	  @Column()
-	  local!: string
-  
 	  @OneToMany(() => Agendamento, agendamento => agendamento.monitoria)
 	  agendamentos!: Agendamento[]
   
@@ -28,4 +26,7 @@ export default class Monitoria extends BaseEntity {
   
 	  @ManyToOne(() => Materia, materia => materia.monitorias)
 	  materia!: Materia
+
+	  @ManyToOne(() => Local, local => local.monitorias)
+	  local!: Local
 }
