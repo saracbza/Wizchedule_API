@@ -1,7 +1,6 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, Unique, OneToMany } from 'typeorm'
 import Agendamento from "./Agendamento"
 import Monitoria from "./Monitoria"
-import Token from './Token'
 
 @Entity()
 @Unique(["email"])
@@ -29,7 +28,4 @@ export default class Usuario extends BaseEntity {
 	  
 	  @OneToMany(() => Agendamento, agendamento => agendamento.usuario)
 	  agendamentos?: Agendamento[]
-  
-	  @OneToMany(() => Token, token => token.usuario)
-	  tokens?: Token[]
 }
