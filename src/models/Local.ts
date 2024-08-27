@@ -1,6 +1,6 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
 import Monitoria from './Monitoria'
-import { TipoLocal } from "../utils/Utils"
+import { TipoLocal } from "../utils/validacoes"
 import { IsEnum } from 'class-validator'
 
 @Entity()
@@ -9,10 +9,10 @@ export default class Local extends BaseEntity{
     id!: number
 
     @Column()
-    numero!: number
+    numero?: number
 
     @Column({
-        type: 'enum',
+        type: 'text',
         enum: TipoLocal
     })
     @IsEnum(TipoLocal, { message: 'Tipo de local inválido' })

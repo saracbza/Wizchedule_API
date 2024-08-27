@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import Usuario from '../../models/Usuario' 
-import { emailInstitucional } from '../../utils/Utils'
+import { emailInstitucional } from '../../utils/validacoes'
 const jwt = require('jsonwebtoken')
 const SECRET = 'd4f4b4e1e6c2efc1f5b4c9a5e6a8e11d908b7cf4a2d7e93a6f5f8e4d2b5d1a8c'
 
@@ -25,7 +25,8 @@ static async store (req: Request, res: Response){
 		usuario.nome = nome
 		usuario.email = email
 	    usuario.senha = bcrypt.hashSync(senha, 10)
-	    usuario.curso = curso
+	    usuario.curso = curso ?? ""
+        usuario.tipo = tipo
 	    await usuario.save() 
 	        
 		return res.json({
@@ -53,7 +54,6 @@ static async store (req: Request, res: Response){
 
     static async logout (req: Request, res: Response) {
         const idUsuario = req.headers.userId
-
         const usuario = await Usuario.findOneBy ({ id: Number(idUsuario) })
         res.removeHeader('x-access-token')
     

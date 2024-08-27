@@ -10,7 +10,7 @@ export default class Agendamento extends BaseEntity {
 	  @Column()
 	  data!: Date
 	  
-	  @Column()
+	  @Column({default: "Sem observações"})
 	  observacao!: string
   
 	  @ManyToOne(() => Usuario, usuario => usuario.agendamentos)
