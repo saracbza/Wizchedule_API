@@ -57,6 +57,6 @@ static async store (req: Request, res: Response){
         const usuario = await Usuario.findOneBy ({ id: Number(idUsuario) })
         res.removeHeader('x-access-token')
     
-        return res.status(204).json(`Usuário ${usuario} saiu`)
+       // res.status(204).json(`Usuário ${usuario} saiu`)
     }
 }
