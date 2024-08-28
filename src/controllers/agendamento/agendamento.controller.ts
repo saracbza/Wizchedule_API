@@ -3,6 +3,7 @@ import Agendamento from '../../models/Agendamento'
 import Usuario from '../../models/Usuario'
 import Monitoria from '../../models/Monitoria'
 import { MoreThan } from 'typeorm'
+import { diaDaSemana } from '../../utils/validacoes'
 
 
 export default class AgendamentoController {
@@ -22,7 +23,10 @@ export default class AgendamentoController {
 			
         if (!monitoria || !data )
           return res.status(400).json({error: 'Monitoria e data devem ser preenchidas!'})
-        if (data < hoje) res.json("Data inválida")
+
+        const diaSemana = diaDaSemana(data)
+
+        if (data < hoje || monitoria.dia_semana !== diaSemana) res.json("Data inválida")
         if (usuario !== null)
         {
         const agendamento = new Agendamento()
@@ -66,7 +70,7 @@ export default class AgendamentoController {
         const usuario = await Usuario.findOneBy({id: Number(idUsuario)})
 
         if (usuario?.tipo == "Monitor") {
-          let alunos: number
+          //let alunos: number // quantidade de alunos naquele dia
           let agendamentos: Agendamento[] = []
 
           if (usuario !== null) {
