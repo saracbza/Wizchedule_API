@@ -2,7 +2,10 @@ import { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import Usuario from '../../models/Usuario' 
 import { emailInstitucional } from '../../utils/validacoes'
-const jwt = require('jsonwebtoken')
+import axios from 'axios'
+import jwt from 'jsonwebtoken'
+/*import { LocalStorage } from 'node-localstorage'
+const localStorage = new LocalStorage('./scratch')*/
 const SECRET = 'd4f4b4e1e6c2efc1f5b4c9a5e6a8e11d908b7cf4a2d7e93a6f5f8e4d2b5d1a8c'
 
 export default class AuthController {
@@ -47,16 +50,30 @@ static async store (req: Request, res: Response){
 
 	    const senhaCheck = bcrypt.compareSync(senha, usuario.senha)
 	    if (!senhaCheck) return res.status(401).json({error: "Senha inválida"})
-
+        
 	    const token = jwt.sign({idUsuario}, SECRET, { expiresIn: '1h'})
+       // localStorage.setItem('token', token)
+
+        axios.defaults.headers.common['x-access-token'] = token
+
         return res.json({ auth: true, token })
     }
 
-    static async logout (req: Request, res: Response) {
-        const idUsuario = req.headers.userId
-        const usuario = await Usuario.findOneBy ({ id: Number(idUsuario) })
-        res.removeHeader('x-access-token')
-    
-       // res.status(204).json(`Usuário ${usuario} saiu`)
+    static async logout (res: Response) {
+        delete axios.defaults.headers.common['x-access-token']
+        return res.status(200).json({auth: false, msg: `Usuário saiu`})
     }
+
+/*static async logout (req: Request, res: Response) {
+    const idUsuario = req.headers.userId
+    const usuario = await Usuario.findOneBy ({ id: Number(idUsuario) })
+
+    if (usuario!==null) {
+        localStorage.removeItem('token')
+    delete axios.defaults.headers.common['x-access-token']
+    return res.status(200).json({auth: false, msg: `Usuário saiu`})
+    }
+
+    //res.status(401).json({error: "Usuário não encontrado"})
+}*/
 }
