@@ -1,7 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import dataBase from './database/ormconfig'
-import seed from './migration/seed'
+import seed from './database/seed'
 
 import routes from './routes'
 
@@ -14,9 +14,9 @@ app.use(routes)
 
 app.listen(port, async () => {
   console.log(`Servidor executando na porta ${port}`)
+  
   if (dataBase.isInitialized){
     console.log('Banco de dados inicializado!')
-
     await seed()
     console.log('Seed executado com sucesso!')
   }

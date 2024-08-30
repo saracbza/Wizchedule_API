@@ -21,7 +21,9 @@ export default class Usuario extends BaseEntity {
 	  
 	  @Column({
         type: 'text',
-        enum: opcoesCursos
+        enum: opcoesCursos,
+		nullable: true,
+		default: ""
     })
 	  @IsEnum(opcoesCursos, { message: 'Curso inválido' })
 	  curso?: opcoesCursos

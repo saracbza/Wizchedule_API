@@ -68,19 +68,19 @@ async function seed() {
     const lab  = await Local.findOneBy({id: 3})
 
     const monitorias = [
-        { dia_semana: 'Segunda-feira', horario_inicio: '09:30', horario_fim: '10:30',
+        { dia_semana: 'Segunda-feira', horario_inicio: '09:30', horario_fim: '10:30', //1
             usuario: jose, materia: info, local: lab
          },
-         { dia_semana: 'Terça-feira', horario_inicio: '15:00', horario_fim: '18:30',
+         { dia_semana: 'Terça-feira', horario_inicio: '15:00', horario_fim: '18:30', //2
             usuario: jose, materia: info, local: sala
          },
-         { dia_semana: 'Quarta-feira', horario_inicio: '09:30', horario_fim: '10:30',
+         { dia_semana: 'Quarta-feira', horario_inicio: '09:30', horario_fim: '10:30', //3
             usuario: marcos, materia: cont, local: lab
          },
-         { dia_semana: 'Quarta-feira', horario_inicio: '09:30', horario_fim: '10:30',
+         { dia_semana: 'Quarta-feira', horario_inicio: '09:30', horario_fim: '10:30', //4
             usuario: jose, materia: info, local: biblio
          },
-         { dia_semana: 'Quinta-feira', horario_inicio: '17:30', horario_fim: '18:00',
+         { dia_semana: 'Quinta-feira', horario_inicio: '17:30', horario_fim: '18:00', //5
             usuario: marcos, materia: cont, local: biblio
          }
     ]
