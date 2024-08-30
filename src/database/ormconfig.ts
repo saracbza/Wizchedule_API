@@ -1,24 +1,27 @@
 import { DataSource } from 'typeorm'
 import dotenv from 'dotenv'
+import path from 'path'
 
-dotenv.config() // carrega as variáveis de ambiente do arquivo .env
+dotenv.config()
 
 const dataBase = new DataSource({
   type: 'sqlite',
-  database: process.env.DATABASE || './src/database/database.sqlite',
+  database: process.env.DATABASE || path.join(__dirname, '../database/database.sqlite'),
   entities: [
-    './src/models/*.ts'
+    path.join(__dirname, '../models/*.ts')
   ],
-  logging: true, // log das queries executadas
-  synchronize: true // cria as tabelas automaticamente
+  logging: true,
+  synchronize: true,
 })
 
-dataBase.initialize()
-  .then(() => {
-    console.log(`Banco de dados inicializado`);
-  })
-  .catch((err) => {
-    console.error(`Erro ao inicializar o banco de dados`, err);
-  })
+const initializeDatabase = async () => {
+  try {
+    await dataBase.initialize()
+    console.log('Banco de dados inicializado com sucesso!')
+  } catch (e) {
+    console.error('Erro ao inicializar o banco de dados:', e)
+    throw e
+  }
+}
 
-export default dataBase
+export { dataBase, initializeDatabase }
