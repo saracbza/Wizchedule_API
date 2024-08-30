@@ -8,7 +8,7 @@ export default class Local extends BaseEntity{
     @PrimaryGeneratedColumn()
     id!: number
 
-    @Column()
+    @Column({nullable: true, default: ""})
     numero?: number
 
     @Column({

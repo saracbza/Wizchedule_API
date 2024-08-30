@@ -3,6 +3,7 @@ import Agendamento from '../../models/Agendamento'
 import Usuario from '../../models/Usuario'
 import Monitoria from '../../models/Monitoria'
 import { MoreThan } from 'typeorm'
+import { diaDaSemana } from '../../utils/validacoes'
 
 
 export default class AgendamentoController {
@@ -22,7 +23,10 @@ export default class AgendamentoController {
 			
         if (!monitoria || !data )
           return res.status(400).json({error: 'Monitoria e data devem ser preenchidas!'})
-        if (data < hoje) res.json("Data inválida")
+
+        const diaSemana = diaDaSemana(data)
+
+        if (data < hoje || monitoria.dia_semana !== diaSemana) res.json("Data inválida")
         if (usuario !== null)
         {
         const agendamento = new Agendamento()
@@ -43,7 +47,7 @@ export default class AgendamentoController {
 
       if (!idUsuario) res.status(401).json({ error: 'Usuário não autenticado' })
         const usuario = await Usuario.findOneBy({id: Number(idUsuario)})
-        if (usuario?.tipo == "Aluno" || !usuario) res.status(403).json("Usuário não possui permissão de acesso")
+        if (usuario?.tipo == "Aluno") res.status(403).json("Usuário não possui permissão de acesso")
       
       if (usuario !== null)
       {  
@@ -64,8 +68,11 @@ export default class AgendamentoController {
 		   
         if (!idUsuario || isNaN(Number(idUsuario))) res.status(401).json({ error: 'Usuário não autenticado' })
         const usuario = await Usuario.findOneBy({id: Number(idUsuario)})
+
         if (usuario?.tipo == "Monitor") {
+          //let alunos: number // quantidade de alunos naquele dia
           let agendamentos: Agendamento[] = []
+
           if (usuario !== null) {
         //encontrar as monitorias deste monitor para dps poder retornar os agendamentos delas
           const monitorias = await Monitoria.find({
@@ -73,9 +80,10 @@ export default class AgendamentoController {
            relations: ['agendamentos'] 
            })
           agendamentos = monitorias.flatMap(monitoria => monitoria.agendamentos)                      			
-          return res.json(agendamentos)
+          return res.json({todos: agendamentos})
       }
         }
+
         else if (usuario?.tipo == "Aluno"){        
           if (usuario !== null) {
           const agendamentos = await Agendamento.find({ where: { 
