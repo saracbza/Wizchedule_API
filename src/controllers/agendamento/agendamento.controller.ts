@@ -72,15 +72,15 @@ export default class AgendamentoController {
         if (usuario?.tipo == "Monitor") {
           //let alunos: number // quantidade de alunos naquele dia
           let agendamentos: Agendamento[] = []
-
           if (usuario !== null) {
         //encontrar as monitorias deste monitor para dps poder retornar os agendamentos delas
           const monitorias = await Monitoria.find({
            where: { usuario: usuario },
            relations: ['agendamentos'] 
            })
-          agendamentos = monitorias.flatMap(monitoria => monitoria.agendamentos)                      			
-          return res.json({todos: agendamentos})
+          agendamentos = monitorias.flatMap(monitoria => monitoria.agendamentos)
+               			
+          return res.json({todos: {agendamentos}})
       }
         }
 
@@ -90,8 +90,9 @@ export default class AgendamentoController {
             usuario: usuario, 
             data: MoreThan(new Date()) 
           },
-            order: {data: 'ASC'}
-        })
+            order: {data: 'ASC'},
+            relations: ['monitorias']
+        } )
         return res.json(agendamentos)
       }}
 

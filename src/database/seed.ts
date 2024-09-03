@@ -5,7 +5,9 @@ import Usuario from "../models/Usuario"
 import { TipoLocal } from "../utils/validacoes"
 
 async function seed() {
+    const cadastrar = true
 
+    if (cadastrar){
     console.log('Iniciando cadastros...')
     const usuarios = [
         { email:'jose@fatec.sp.gov.br', nome: 'Jose Alves', //1
@@ -97,6 +99,8 @@ async function seed() {
      }
       }))
       console.log('Finalizando cadastros...')
+    }
+    else console.log('Seed Ok!')
 }
 
 export default seed
