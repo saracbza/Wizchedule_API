@@ -8,14 +8,14 @@ static async store (req: Request, res: Response){
   const  idUsuario = req.headers.userId
   const { numero, tipo } = req.body 
     
-  if (!idUsuario || isNaN(Number(idUsuario))) res.status(401).json({ error: 'Usuário não autenticado' })
+  if (!idUsuario || isNaN(Number(idUsuario))) return res.status(401).json({ error: 'Usuário não autenticado' })
 
   const usuario = await Usuario.findOneBy({id: Number(idUsuario)})
-  if (usuario?.tipo == "Aluno") res.status(403).json("Usuário não possui permissão de acesso")
+  if (usuario?.tipo == "Aluno") return res.status(403).json("Usuário não possui permissão de acesso")
 
   if(!tipo) return res.status(400).json({error: "Tipo é obrigatório!"})
   if (tipo == "Sala" || tipo == "Laboratório")
-    if (!numero) res.status(400).json("Sala e laboratório devem ter número")
+    if (!numero) return res.status(400).json("Sala e laboratório devem ter número")
 
   
 	const local = new Local()
@@ -32,7 +32,7 @@ static async show (req: Request, res: Response){
         if (!idUsuario) return res.status(401).json({ error: 'Usuário não autenticado' })    
         
         const usuario = await Usuario.findOneBy({id: Number(idUsuario)})
-        if (usuario?.tipo == "Aluno" || !usuario) res.status(403).json("Usuário não possui permissão de acesso")    
+        if (usuario?.tipo == "Aluno" || !usuario) return res.status(403).json("Usuário não possui permissão de acesso")    
 
         const local = await Local.find()
         
