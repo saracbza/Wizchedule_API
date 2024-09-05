@@ -60,7 +60,7 @@ static async store (req: Request, res: Response){
 
         //axios.defaults.headers.common['x-access-token'] = token
 
-        return res.json({ auth: true, token })
+        return res.status(200).json({ auth: true, token })
     }
     static async logout (req: Request, res:Response) {
         const idUsuario = req.headers.userId
