@@ -2,7 +2,7 @@ import Local from "../models/Local"
 import Materia from "../models/Materia"
 import Monitoria from "../models/Monitoria"
 import Usuario from "../models/Usuario"
-import { TipoLocal } from "../utils/validacoes"
+import { opcoesCursos, TipoLocal } from "../utils/validacoes"
 import bcrypt from 'bcrypt'
 
 async function seed() {
@@ -13,19 +13,19 @@ async function seed() {
 
     const usuarios = [
         { email:'jose@fatec.sp.gov.br', nome: 'Jose Alves', //1
-            senha: bcrypt.hashSync("senha123", 10), curso: '', tipo:'Monitor' }, 
+            senha: bcrypt.hashSync("senha123", 10), curso: opcoesCursos.vazio, tipo:'Monitor' }, 
 
         { email:'maria@fatec.sp.gov.br', nome: 'Maria Aparecida', //2
-            senha: bcrypt.hashSync("123456789", 10), curso: 'Gestão Empresarial', tipo:'Aluno' },
+            senha: bcrypt.hashSync("123456789", 10), curso: opcoesCursos.gstE, tipo:'Aluno' },
 
         { email:'rafaela@fatec.sp.gov.br', nome: 'Rafaela Gomes', //3
-            senha: bcrypt.hashSync("senhatop", 10), curso: 'Análise e Desenvolvimento de Sistemas', tipo:'Aluno' },
+            senha: bcrypt.hashSync("senhatop", 10), curso: opcoesCursos.ads, tipo:'Aluno' },
 
         { email:'marcos@fatec.sp.gov.br', nome: 'Marcos Roberto', //4
-            senha: bcrypt.hashSync("roberto115", 10), curso: '', tipo:'Monitor' },
+            senha: bcrypt.hashSync("roberto115", 10), curso: opcoesCursos.vazio, tipo:'Monitor' },
 
         { email:'vanessa@fatec.sp.gov.br', nome: 'Vanessa Manuela', //5
-            senha: bcrypt.hashSync("algumacoisa", 10), curso: 'Comércio Exterior', tipo: 'Aluno' }
+            senha: bcrypt.hashSync("algumacoisa", 10), curso: opcoesCursos.comex, tipo: 'Aluno' }
     ]
 
     await Promise.all(usuarios.map(async (dados) => { 
@@ -34,6 +34,7 @@ async function seed() {
         usuario.nome = dados.nome
         usuario.senha = dados.senha
         usuario.tipo = dados.tipo
+        usuario.curso = dados.curso
         await usuario.save() 
       }))
 
