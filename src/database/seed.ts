@@ -12,6 +12,9 @@ async function seed() {
     console.log('Iniciando cadastros...')
 
     const usuarios = [
+        { email:'teste', nome: 'Teste Gonçalves', //1
+            senha: bcrypt.hashSync("teste", 10), curso: opcoesCursos.ads, tipo:'Aluno' },
+
         { email:'jose@fatec.sp.gov.br', nome: 'Jose Alves', //1
             senha: bcrypt.hashSync("senha123", 10), curso: opcoesCursos.vazio, tipo:'Monitor' }, 
 
