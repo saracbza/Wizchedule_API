@@ -152,6 +152,7 @@ export default class AgendamentoController {
             await dados(agendamento)
     
             return {
+                id: agendamento.id,
                 local,
                 materia,
                 data: agendamento.data,

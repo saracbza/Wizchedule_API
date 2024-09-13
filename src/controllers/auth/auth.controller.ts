@@ -76,4 +76,17 @@ static async store (req: Request, res: Response){
         console.log(`Usuário ${usuario?.nome} saiu`)
         return res.json({auth: false})
     }
+
+    static async mudarFoto (req: Request, res:Response) {
+        const idUsuario = req.headers.userId
+        const { fotoId } = req.body
+        console.log("foto passada: ", Number(fotoId))
+        const usuario = await Usuario.findOneBy ({ id: Number(idUsuario) })
+        if (usuario !== null){
+            usuario.idFoto = Number(fotoId) ? Number(fotoId) : usuario?.idFoto
+            await usuario?.save()
+        }
+
+        return res.status(200).json('Foto alterada')
+    }
 }

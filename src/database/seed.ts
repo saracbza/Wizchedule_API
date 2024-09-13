@@ -19,7 +19,7 @@ async function seed() {
             senha: bcrypt.hashSync("senha123", 10), curso: opcoesCursos.vazio, tipo:'Monitor', idFoto: 3 }, 
 
         { email:'maria@fatec.sp.gov.br', nome: 'Maria Aparecida', //2
-            senha: bcrypt.hashSync("123456789", 10), curso: opcoesCursos.gstE, tipo:'Aluno', idFoto: 5  },
+            senha: bcrypt.hashSync("123456789", 10), curso: opcoesCursos.gstE, tipo:'Aluno', idFoto: 3  },
 
         { email:'rafaela@fatec.sp.gov.br', nome: 'Rafaela Gomes', //3
             senha: bcrypt.hashSync("senhatop", 10), curso: opcoesCursos.ads, tipo:'Aluno' },
