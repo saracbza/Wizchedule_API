@@ -1,11 +1,11 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm'
 import Agendamento from './Agendamento'
-import Materia from './Materia'
 import Usuario from './Usuario'
-import Local from './Local'
+import Sala from './Sala'
+import Idioma from './Idioma'
 
 @Entity()
-export default class Monitoria extends BaseEntity {
+export default class Aula extends BaseEntity {
 	  @PrimaryGeneratedColumn()
 	  id!: number
 
@@ -18,15 +18,15 @@ export default class Monitoria extends BaseEntity {
 	  @Column({ length: 5 })
 	  horario_fim!: string //HH:MM
   
-	  @OneToMany(() => Agendamento, agendamento => agendamento.monitoria)
+	  @OneToMany(() => Agendamento, agendamento => agendamento.aula)
 	  agendamentos!: Agendamento[]
   
-	  @ManyToOne(() => Usuario, usuario => usuario.monitorias)
+	  @ManyToOne(() => Usuario, usuario => usuario.aulas)
 	  usuario!: Usuario
   
-	  @ManyToOne(() => Materia, materia => materia.monitorias)
-	  materia!: Materia
+	  @ManyToOne(() => Idioma, idioma => idioma.aulas)
+	  idioma!: Idioma
 
-	  @ManyToOne(() => Local, local => local.monitorias)
-	  local!: Local
+	  @ManyToOne(() => Sala, sala => sala.aulas)
+	  sala!: Sala
 }

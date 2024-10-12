@@ -1,6 +1,6 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
 import Usuario from './Usuario'
-import Monitoria from './Monitoria'
+import Aula from './Aula'
 
 @Entity()
 export default class Agendamento extends BaseEntity {
@@ -16,6 +16,6 @@ export default class Agendamento extends BaseEntity {
 	  @ManyToOne(() => Usuario, usuario => usuario.agendamentos)
 	  usuario!: Usuario
    
-	  @ManyToOne(() => Monitoria, monitoria => monitoria.agendamentos)
-	  monitoria!: Monitoria
+	  @ManyToOne(() => Aula, aula => aula.agendamentos)
+	  aula!: Aula
 }

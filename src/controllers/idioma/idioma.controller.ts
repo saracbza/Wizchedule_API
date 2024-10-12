@@ -1,8 +1,8 @@
 import { Request, Response } from 'express'
-import Materia from '../../models/Materia'
+import Idioma from '../../models/Idioma'
 import Usuario from '../../models/Usuario'
 
-export default class MateriaController {
+export default class IdiomaController {
 
 static async store (req: Request, res: Response){
   const idUsuario = req.headers.userId
@@ -15,11 +15,11 @@ static async store (req: Request, res: Response){
 
   if(!nome) return res.status(400).json({error: "Nome obrigatório!"})
   
-	const materia = new Materia()
-	materia.nome = nome
-	await materia.save() 
+	const idioma = new Idioma()
+	idioma.nome = nome
+	await idioma.save() 
 	        
-	return res.json(materia) 
+	return res.json(idioma) 
 	 }
 	 
 static async show (req: Request, res: Response){
@@ -29,11 +29,11 @@ static async show (req: Request, res: Response){
         const usuario = await Usuario.findOneBy({id: Number(idUsuario)})
         if (!usuario) res.json("Usuário não encontrado")    
 
-        const materia = await Materia.find()
+        const idioma = await Idioma.find()
         
-        if (!materia) 
+        if (!idioma) 
 	      return res.status(404)
 
-        return res.json(materia) 
+        return res.json(idioma) 
     }	
 }
