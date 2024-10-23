@@ -3,7 +3,7 @@ import Agendamento from './Agendamento'
 import Usuario from './Usuario'
 import Sala from './Sala'
 import Idioma from './Idioma'
-
+//
 @Entity()
 export default class Aula extends BaseEntity {
 	  @PrimaryGeneratedColumn()

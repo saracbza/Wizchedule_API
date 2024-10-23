@@ -44,8 +44,8 @@ async function seed() {
       const marcos = await Usuario.findOneBy({nome: "Marcos Roberto"})
 
     const idiomas = [
-        { nome: 'Alemão' }, //1
-        { nome: 'Inglês' } //2
+        { nome: 'Alemão' },
+        { nome: 'Inglês' }
     ]
 
     await Promise.all(idiomas.map(async (dados) => { 
@@ -58,9 +58,9 @@ async function seed() {
     const ingles = await Idioma.findOneBy({nome: 'Inglês'})
 
     const salas = [
-        { numero: 5 }, //1
-        { numero: 3 }, //2
-        { numero: 2 } //3
+        { numero: 5 }, 
+        { numero: 3 },
+        { numero: 2 } 
     ]
 
     await Promise.all(salas.map(async (dados) => { 

@@ -47,7 +47,6 @@ export default class AulaController{
 
 	      }
 
-
 	static async show (req: Request, res: Response){
         const { data } = req.body
         const idUsuario = req.headers.userId

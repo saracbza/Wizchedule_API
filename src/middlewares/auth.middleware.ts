@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken')
 const localStorage = new LocalStorage('./scratch')
 
 export default async function authMiddleware (req: Request, res: Response, next: NextFunction) {
+  
   //const token = axios.defaults.headers.common['x-access-token']
   const token = localStorage.getItem('token')
   if (!token) return res.status(401).json({ auth: false, message: 'No token provided.' })

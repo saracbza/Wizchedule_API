@@ -16,7 +16,7 @@ static async store (req: Request, res: Response){
         if(!email || !senha) return res.status(400).json({error: "Email e senha obrigatórios!"})
         
         const usuarioCheck = await Usuario.findOneBy({ email })
-        if (usuarioCheck) return res.status(409).json({ error: 'Email já cadastrado' })
+        if (usuarioCheck) return res.status(409).json({ error: 'Email já cadastrado!' })
         
         if (tipo == "Aluno" || tipo == "Professor") return res.status(403).json({error: "Apenas administrador pode cadastrar novos usuários"})
         
