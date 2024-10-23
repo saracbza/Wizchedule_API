@@ -1,6 +1,6 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
 import Aula from './Aula'
-
+//
 @Entity()
 export default class Idioma extends BaseEntity {
 	  @PrimaryGeneratedColumn()

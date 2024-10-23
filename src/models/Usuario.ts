@@ -1,7 +1,7 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, Unique, OneToMany } from 'typeorm'
 import Agendamento from "./Agendamento"
 import Aula from "./Aula"
-
+//
 @Entity()
 @Unique(["email"])
 export default class Usuario extends BaseEntity {

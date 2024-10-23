@@ -1,7 +1,7 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
 import Usuario from './Usuario'
 import Aula from './Aula'
-
+//
 @Entity()
 export default class Agendamento extends BaseEntity {
 	  @PrimaryGeneratedColumn()

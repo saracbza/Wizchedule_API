@@ -4,7 +4,7 @@ import idiomaRoutes from './idioma/idioma.routes'
 import aulaRoutes from './aula/aula.routes'
 import authRoutes from './auth/auth.routes'
 import salaRoutes from './sala/sala.routes'
-
+//
 const routes = Router()
 
 routes.use('/agendamento', agendamentoRoutes)

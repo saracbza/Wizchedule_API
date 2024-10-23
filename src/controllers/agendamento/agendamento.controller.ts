@@ -66,7 +66,6 @@ export default class AgendamentoController {
             relations: ['agendamentos', 'sala'] 
            })
 
-        //contagem de agendamentos associados a essa monitoria
            const contagemAlunos = new Map<number, Map<string, number>>()
            aulas.forEach(aula => {
            
