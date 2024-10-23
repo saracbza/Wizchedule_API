@@ -1,14 +1,14 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
-import Monitoria from './Monitoria'
+import Aula from './Aula'
 
 @Entity()
-export default class Materia extends BaseEntity {
+export default class Idioma extends BaseEntity {
 	  @PrimaryGeneratedColumn()
 	  id!: number
 
 	  @Column()
 	  nome!: string
   
-	  @OneToMany(() => Monitoria, monitoria => monitoria.materia)
-	  monitorias!: Monitoria[]
+	  @OneToMany(() => Aula, aula => aula.idioma)
+	  aulas!: Aula[]
 }

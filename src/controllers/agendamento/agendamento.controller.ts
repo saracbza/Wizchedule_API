@@ -1,15 +1,15 @@
 import { Request, Response } from 'express'
 import Agendamento from '../../models/Agendamento'
 import Usuario from '../../models/Usuario'
-import Monitoria from '../../models/Monitoria'
-import { diaDaSemana, TipoLocal } from '../../utils/validacoes'
+import Aula from '../../models/Aula'
+import { diaDaSemana } from '../../utils/validacoes'
 import { MoreThanOrEqual } from 'typeorm'
 //import axios from 'axios'
 
 export default class AgendamentoController {
     static async store(req: Request, res: Response){
 
-        const { data, idMonitoria, obs } = req.body
+        const { data, idAula, obs } = req.body
         const idUsuario = req.headers.userId
 
         const hoje = new Date()
@@ -18,30 +18,30 @@ export default class AgendamentoController {
 
         const usuario = await Usuario.findOneBy({id: Number(idUsuario)})
 
-        if (usuario?.tipo == "Monitor") return res.status(403).json("Usuário não possui permissão de acesso")
+        if (usuario?.tipo == "Administrador" || usuario?.tipo == "Professor") return res.status(403).json("Usuário não possui permissão de acesso")
         
-        if(!idMonitoria || isNaN(Number(idMonitoria))) return res.status(401).json({ error: 'Monitoria inválida' })
+        if(!idAula || isNaN(Number(idAula))) return res.status(401).json({ error: 'Aula inválida' })
 				
-        const monitoria = await Monitoria.findOneBy({ id: Number(idMonitoria) })
-        if (!monitoria || !data ) return res.status(400).json({error: 'Monitoria e data devem ser preenchidas!'})
+        const aula = await Aula.findOneBy({ id: Number(idAula) })
+        if (!aula || !data ) return res.status(400).json({error: 'Aula e data devem ser preenchidas!'})
 
         const data2 = new Date(data)
         const diaSemana = diaDaSemana(data2)
         console.log(diaSemana)
 
-        if (new Date(data) < hoje || monitoria.dia_semana !== diaSemana) return res.status(401).json("Data inválida")
+        if (new Date(data) < hoje || aula.dia_semana !== diaSemana) return res.status(401).json("Data inválida")
         
         if (usuario !== null)
         {
           const agendamentos = await Agendamento.find()
           agendamentos.forEach(a => {
-          if (data == a.data && monitoria == a.monitoria && usuario == a.usuario) 
-            return res.status(409).json("Usuário já está agendado para esta monitoria")
+          if (data == a.data && aula == a.aula && usuario == a.usuario) 
+            return res.status(409).json("Usuário já está agendado para esta aula")
         }) 
 
           const agendamento = new Agendamento()
           agendamento.data = data
-          agendamento.monitoria = monitoria
+          agendamento.aula = aula
           agendamento.observacao = obs
           agendamento.usuario = usuario
 
@@ -51,27 +51,6 @@ export default class AgendamentoController {
         }
         return res.json('Erro com usuário')
     }
-    
-    /*static async dataAgendamento (req: Request, res: Response){
-      const idUsuario = req.headers.userId
-
-      if (!idUsuario) res.status(401).json({ error: 'Usuário não autenticado' })
-        const usuario = await Usuario.findOneBy({id: Number(idUsuario)})
-        if (usuario?.tipo == "Aluno") res.status(403).json("Usuário não possui permissão de acesso")
-      
-      if (usuario !== null)
-      {  
-        const agendamentos = await Agendamento.find({ where: { 
-          usuario: usuario, 
-          data: MoreThan(new Date()) 
-        },
-          order: {data: 'ASC'}
-      })
-      const datas = agendamentos.map(agendamento => agendamento.data)
-      return res.json(datas)
-      }
-      else res.json('Erro com usuário')
-    }*/
    
     static async show (req: Request, res: Response){
 		    const idUsuario = req.headers.userId
@@ -80,45 +59,42 @@ export default class AgendamentoController {
         if (!idUsuario || isNaN(Number(idUsuario))) res.status(401).json({ error: 'Usuário não autenticado' })
         const usuario = await Usuario.findOneBy({id: Number(idUsuario)})
         if (usuario !== null){
-        if (usuario?.tipo == "Monitor") {
+        if (usuario?.tipo == "Professor") {
 
-        //encontrar as monitorias deste monitor para dps poder retornar os agendamentos delas
-          const monitorias = await Monitoria.find({
+          const aulas = await Aula.find({
             where: { usuario: usuario },
-            relations: ['agendamentos', 'local'] 
+            relations: ['agendamentos', 'sala'] 
            })
 
         //contagem de agendamentos associados a essa monitoria
            const contagemAlunos = new Map<number, Map<string, number>>()
-           monitorias.forEach(monitoria => {
+           aulas.forEach(aula => {
            
-            if (!contagemAlunos.has(monitoria.id)) {
-              contagemAlunos.set(monitoria.id, new Map<string, number>());
+            if (!contagemAlunos.has(aula.id)) {
+              contagemAlunos.set(aula.id, new Map<string, number>());
             }
           
-            const dataContagem = contagemAlunos.get(monitoria.id)!;
-            monitoria.agendamentos.forEach(agendamento => {
+            const dataContagem = contagemAlunos.get(aula.id)!;
+            aula.agendamentos.forEach(agendamento => {
                 const dataConv = agendamento.data.toISOString().split('T')[0]
                 const count = dataContagem.get(dataConv) || 0
                 dataContagem.set(dataConv, count + 1)
             })
         })
-          console.log("Consulta: agendamentos - Monitor")
+          console.log("Consulta: agendamentos - Professor")
        
-          const resultado = monitorias.flatMap(monitoria => 
-            monitoria.agendamentos.map(agendamento => {
+          const resultado = aulas.flatMap(aula => 
+            aula.agendamentos.map(agendamento => {
               const dataConv = agendamento.data.toISOString().split('T')[0]
-              const quantidadeAluno = contagemAlunos.get(monitoria.id)?.get(dataConv) || 0
+              const quantidadeAluno = contagemAlunos.get(aula.id)?.get(dataConv) || 0
                 
               return {
-                local: monitoria.local 
-                    ? (monitoria.local.numero ? `${monitoria.local.tipo} ${monitoria.local.numero}` : `${monitoria.local.tipo}`) 
-                    : '',
+                local: aula.sala,
                 quantidadeAluno,
                 data: agendamento.data,
                 obs: agendamento.observacao,
-                dia_semana: monitoria.dia_semana || '',
-                horario: `${monitoria.horario_inicio} - ${monitoria.horario_fim}`,
+                dia_semana: aula.dia_semana || '',
+                horario: `${aula.horario_inicio} - ${aula.horario_fim}`,
             }
           })
         )
@@ -134,18 +110,19 @@ export default class AgendamentoController {
             data: MoreThanOrEqual(hoje) 
           },
             order: {data: 'ASC'},
-            relations: ['monitoria']
+            relations: ['aula']
         } )
 
-      let local: string, materia: string
-        async function dados(agendamento: Agendamento){
-          const monitoria = await Monitoria.find({ where: {id: agendamento.monitoria.id}, relations: ['materia', 'local'] })
-          console.log('Monitoria: ', monitoria)
-          const localA = monitoria.map(m => (m.local.numero ? `${m.local.tipo} ${m.local.numero}` : `${m.local.tipo}`))
-          const materiaA = monitoria.map(m => (m.materia.nome))
+      let sala: string, idioma: string
 
-            local = localA[0]
-            materia = materiaA[0]
+        async function dados(agendamento: Agendamento){
+          const aula = await Aula.find({ where: {id: agendamento.aula.id}, relations: ['idioma', 'sala'] })
+          console.log('Aula: ', aula)
+          const salaA = aula.map(m => (`${m.sala} ${m.sala.numero}`))
+          const idiomaA = aula.map(m => (m.idioma.nome))
+
+            sala = salaA[0]
+            idioma = idiomaA[0]
           }
 
           const resultado = await Promise.all(agendamentos.map(async (agendamento) => {
@@ -153,12 +130,12 @@ export default class AgendamentoController {
     
             return {
                 id: agendamento.id,
-                local,
-                materia,
+                sala,
+                idioma,
                 data: agendamento.data,
                 obs: agendamento.observacao,
-                dia_semana: agendamento.monitoria?.dia_semana || '',
-                horario: `${agendamento.monitoria?.horario_inicio} - ${agendamento.monitoria?.horario_fim}`,
+                dia_semana: agendamento.aula?.dia_semana || '',
+                horario: `${agendamento.aula?.horario_inicio} - ${agendamento.aula?.horario_fim}`,
             }
         }))
         return res.status(200).json(resultado)

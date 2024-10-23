@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import Usuario from '../../models/Usuario' 
-import { emailInstitucional } from '../../utils/validacoes'
 import jwt from 'jsonwebtoken'
 import { LocalStorage } from 'node-localstorage'
 import crypto from 'crypto'
@@ -11,23 +10,20 @@ const localStorage = new LocalStorage('./scratch')
 export default class AuthController {
 
 static async store (req: Request, res: Response){
-        const { nome, email, senha, curso, tipo, idFoto } = req.body 
+        const { nome, email, senha, tipo, idFoto } = req.body 
         
         if(!nome || !tipo ) return res.status(400).json({error: "Nome e tipo obrigatórios!"}) 
         if(!email || !senha) return res.status(400).json({error: "Email e senha obrigatórios!"})
-        if(!emailInstitucional(email)) return res.status(422).json({error: "Email inválido!"})
         
         const usuarioCheck = await Usuario.findOneBy({ email })
         if (usuarioCheck) return res.status(409).json({ error: 'Email já cadastrado' })
         
-        if (tipo == "Aluno") //aluno
-	        if(!curso) return res.status(400).json({error: "Curso obrigatório"})
+        if (tipo == "Aluno" || tipo == "Professor") return res.status(403).json({error: "Apenas administrador pode cadastrar novos usuários"})
         
 		const usuario = new Usuario()
 		usuario.nome = nome
 		usuario.email = email
 	    usuario.senha = bcrypt.hashSync(senha, 10)
-	    usuario.curso = curso ?? ""
         usuario.tipo = tipo
         usuario.idFoto = idFoto ?? ""
 	    await usuario.save() 
@@ -35,7 +31,6 @@ static async store (req: Request, res: Response){
 		return res.status(200).json({
 	       nome: usuario.nome,
 	       email: usuario.email,
-	       curso: usuario.curso ?? ""
         }) 
 	      }
 
@@ -61,7 +56,6 @@ static async store (req: Request, res: Response){
 
         return res.status(200).json({ 
             nome: usuario.nome, 
-            curso: usuario.curso, 
             tipo: usuario.tipo, 
             foto: usuario.idFoto,
             token })
