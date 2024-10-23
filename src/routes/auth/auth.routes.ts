@@ -8,5 +8,6 @@ authRoutes.post('/register', AuthController.store)
 authRoutes.post('/login', AuthController.login)
 //authRoutes.post('/refresh', AuthController.refresh)
 authRoutes.post('/logout', authMiddleware, AuthController.logout)
+authRoutes.post('/mudarFoto', authMiddleware, AuthController.mudarFoto)
 
 export default authRoutes

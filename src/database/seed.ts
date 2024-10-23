@@ -13,22 +13,22 @@ async function seed() {
 
     const usuarios = [
         { email:'teste', nome: 'Teste Gonçalves', //1
-            senha: bcrypt.hashSync("teste", 10), curso: opcoesCursos.ads, tipo:'Aluno' },
+            senha: bcrypt.hashSync("teste", 10), curso: opcoesCursos.ads, tipo:'Aluno', idFoto: 2 },
 
         { email:'jose@fatec.sp.gov.br', nome: 'Jose Alves', //1
-            senha: bcrypt.hashSync("senha123", 10), curso: opcoesCursos.vazio, tipo:'Monitor' }, 
+            senha: bcrypt.hashSync("senha123", 10), curso: opcoesCursos.vazio, tipo:'Monitor', idFoto: 3 }, 
 
         { email:'maria@fatec.sp.gov.br', nome: 'Maria Aparecida', //2
-            senha: bcrypt.hashSync("123456789", 10), curso: opcoesCursos.gstE, tipo:'Aluno' },
+            senha: bcrypt.hashSync("123456789", 10), curso: opcoesCursos.gstE, tipo:'Aluno', idFoto: 3  },
 
         { email:'rafaela@fatec.sp.gov.br', nome: 'Rafaela Gomes', //3
             senha: bcrypt.hashSync("senhatop", 10), curso: opcoesCursos.ads, tipo:'Aluno' },
 
         { email:'marcos@fatec.sp.gov.br', nome: 'Marcos Roberto', //4
-            senha: bcrypt.hashSync("roberto115", 10), curso: opcoesCursos.vazio, tipo:'Monitor' },
+            senha: bcrypt.hashSync("roberto115", 10), curso: opcoesCursos.vazio, tipo:'Monitor', idFoto: 4 },
 
         { email:'vanessa@fatec.sp.gov.br', nome: 'Vanessa Manuela', //5
-            senha: bcrypt.hashSync("algumacoisa", 10), curso: opcoesCursos.comex, tipo: 'Aluno' }
+            senha: bcrypt.hashSync("algumacoisa", 10), curso: opcoesCursos.comex, tipo: 'Aluno', idFoto: 2 }
     ]
 
     await Promise.all(usuarios.map(async (dados) => { 
@@ -38,6 +38,7 @@ async function seed() {
         usuario.senha = dados.senha
         usuario.tipo = dados.tipo
         usuario.curso = dados.curso
+        usuario.idFoto = dados.idFoto ? dados.idFoto : 1
         await usuario.save() 
       }))
 

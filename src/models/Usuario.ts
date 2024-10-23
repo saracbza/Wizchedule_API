@@ -9,6 +9,9 @@ import { IsEnum } from 'class-validator'
 export default class Usuario extends BaseEntity {
 	  @PrimaryGeneratedColumn()
 	  id!:number
+
+	  @Column({default: 1})
+	  idFoto!: number
 	  
 	  @Column()
 	  email!: string
