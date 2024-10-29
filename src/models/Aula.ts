@@ -11,6 +11,9 @@ export default class Aula extends BaseEntity {
 
 	  @Column()
 	  dia_semana!: string
+
+	  @Column()
+	  tipo!: string
   
 	  @Column({ length: 5 })
 	  horario_inicio!: string //HH:MM

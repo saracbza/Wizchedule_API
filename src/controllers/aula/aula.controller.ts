@@ -8,7 +8,7 @@ import Sala from '../../models/Sala'
 export default class AulaController{
     static async store (req: Request, res: Response){
         const idUsuario = req.headers.userId
-        const { dia_semana, horario_inicio, horario_fim, idSala, idIdioma } = req.body 
+        const { dia_semana, horario_inicio, horario_fim, idSala, idIdioma, tipo } = req.body 
         
         if (!idUsuario || isNaN(Number(idUsuario))) res.status(401).json({ error: 'Usuário não autenticado' })
 
@@ -17,12 +17,14 @@ export default class AulaController{
 
         if(!idSala || isNaN(Number(idSala))) res.json("Sala é obrigatório")
         const sala = await Sala.findOneBy({id: Number(idSala)})
-        if (!sala) res.json("Sala informado não existe")
+        if (!sala) res.status(400).json("Sala informada não existe")
 
         if(!idIdioma || isNaN(Number(idIdioma))) res.json("Idioma é obrigatório")
         const idioma = await Idioma.findOneBy({id: Number(idIdioma)})
-        if (!idioma) res.json("Idioma informada não existe")
+        if (!idioma) res.status(400).json("Idioma informada não existe")
 
+        if (!tipo || (tipo !== "Presencial" && tipo != "Online")) return res.status(400).json("Tipo de aula informado incorretamente")
+ 
         if(!dia_semana|| !horario_inicio || !horario_fim ) 
         res.status(400).json({error: "Todos os dados são obrigatórios!"})
 
@@ -34,10 +36,12 @@ export default class AulaController{
 	       aula.sala = sala
 	       aula.idioma = idioma
 	       aula.usuario = usuario
+         aula.tipo = tipo
 	       await aula.save() 
 	      
         return res.status(201).json({
           idioma: aula.idioma.nome,
+          tipo_aula: aula.tipo,
           dia_semana: aula.dia_semana,
           horario_inicio: aula.horario_inicio,
           horario_fim: aula.horario_fim,
@@ -66,6 +70,7 @@ export default class AulaController{
          const resultado = aulas.map (aula => {
             return {
               id: aula.id,
+              tipo: aula.tipo,
               idioma: aula.idioma.nome,
               dia_semana: aula.dia_semana,
               horario: `${aula.horario_inicio} - ${aula.horario_fim}`,
