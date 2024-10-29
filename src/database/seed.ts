@@ -5,28 +5,31 @@ import Usuario from "../models/Usuario"
 import bcrypt from 'bcrypt'
 
 async function seed() {
-    const cadastrar = false
+    const cadastrar = false 
 
     if (cadastrar){
     console.log('Iniciando cadastros...')
 
     const usuarios = [
-        { email:'teste', nome: 'Teste Gonçalves', //1
-            senha: bcrypt.hashSync("teste", 10), tipo:'Aluno', idFoto: 2 },
+        { email:'adm', nome: 'Administrador Johnson', //adm
+            senha: bcrypt.hashSync("adm", 10), tipo:'Administrador', idFoto: 1 },
 
-        { email:'jose@fatec.sp.gov.br', nome: 'Jose Alves', //1
+        /*{ email:'teste', nome: 'Teste Gonçalves', //1
+            senha: bcrypt.hashSync("teste", 10), tipo:'Aluno', idFoto: 2 },*/
+
+        { email:'jose@gmail.com', nome: 'Jose Alves', //1
             senha: bcrypt.hashSync("senha123", 10), tipo:'Professor', idFoto: 3 }, 
 
-        { email:'maria@fatec.sp.gov.br', nome: 'Maria Aparecida', //2
+        { email:'maria@gmail.com', nome: 'Maria Aparecida', //2
             senha: bcrypt.hashSync("123456789", 10), tipo:'Aluno', idFoto: 3  },
 
-        { email:'rafaela@fatec.sp.gov.br', nome: 'Rafaela Gomes', //3
+        { email:'rafaela@gmail.com', nome: 'Rafaela Gomes', //3
             senha: bcrypt.hashSync("senhatop", 10), tipo:'Aluno' },
 
-        { email:'marcos@fatec.sp.gov.br', nome: 'Marcos Roberto', //4
+        { email:'marcos@email.com', nome: 'Marcos Roberto', //4
             senha: bcrypt.hashSync("roberto115", 10), tipo:'Professor', idFoto: 4 },
 
-        { email:'vanessa@fatec.sp.gov.br', nome: 'Vanessa Manuela', //5
+        { email:'vanessa@teste.mg.gov.br', nome: 'Vanessa Manuela', //5
             senha: bcrypt.hashSync("algumacoisa", 10), tipo: 'Aluno', idFoto: 2 }
     ]
 

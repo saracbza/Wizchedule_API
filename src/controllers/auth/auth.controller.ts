@@ -10,31 +10,54 @@ const localStorage = new LocalStorage('./scratch')
 export default class AuthController {
 
 static async store (req: Request, res: Response){
-        const { nome, email, senha, tipo, idFoto } = req.body 
+    const { nome, email, senha, tipo, idFoto } = req.body
+    let idUsuario
+
+    if(!nome || !tipo ) return res.status(400).json({error: "Nome e tipo obrigatórios!"}) 
+    if(!email || !senha) return res.status(400).json({error: "Email e senha obrigatórios!"})
+
+    if (tipo == "Professor"){
+        const t = localStorage.getItem('token')
+        if (!t) return res.status(401).json({ auth: false, message: 'No token provided.' })
+  
+        const s = localStorage.getItem('secret')
+        if (!s) return res.json({auth: false, message: 'No secret'})
+  
+        jwt.verify(t, s, (err: any, decoded: any) => {
+        if (err) return res.status(500).json("Failed to authenticate token")
+      
+        idUsuario = decoded.idUsuario
+    })
+    }
+       
+    if (tipo == "Professor"){
+        if(!idUsuario || isNaN(Number(idUsuario))) return res.status(400).json({error: "Login obrigatório para esta ação!"})
+        const user = await Usuario.findOneBy ({ id: Number(idUsuario) })
+        if (user?.tipo != "Administrador") return res.status(403).json({error: "Apenas administrador pode cadastrar esse tipo de usuário"})
+    }
         
-        if(!nome || !tipo ) return res.status(400).json({error: "Nome e tipo obrigatórios!"}) 
-        if(!email || !senha) return res.status(400).json({error: "Email e senha obrigatórios!"})
+    const usuarioCheck = await Usuario.findOneBy({ email })
+    if (usuarioCheck) return res.status(409).json({ error: 'Email já cadastrado!' })
         
-        const usuarioCheck = await Usuario.findOneBy({ email })
-        if (usuarioCheck) return res.status(409).json({ error: 'Email já cadastrado!' })
-        
-        if (tipo == "Aluno" || tipo == "Professor") return res.status(403).json({error: "Apenas administrador pode cadastrar novos usuários"})
-        
-		const usuario = new Usuario()
-		usuario.nome = nome
-		usuario.email = email
-	    usuario.senha = bcrypt.hashSync(senha, 10)
-        usuario.tipo = tipo
-        usuario.idFoto = idFoto ?? ""
-	    await usuario.save() 
+	const usuario = new Usuario()
+	usuario.nome = nome
+	usuario.email = email
+	usuario.senha = bcrypt.hashSync(senha, 10)
+    usuario.tipo = tipo
+    usuario.idFoto = idFoto ?? ""
+	await usuario.save() 
 	        
-		return res.status(200).json({
-	       nome: usuario.nome,
-	       email: usuario.email,
-        }) 
-	      }
+	return res.status(200).json({
+	    nome: usuario.nome,
+	    email: usuario.email,
+    }) 
+}
 
     static async login (req: Request, res: Response){
+        const t = localStorage.getItem('token')
+        console.log(t)
+        if (!(!t)) return res.status(409).json("Usuário já está autenticado")
+
         const { email, senha } = req.body
 
         if (!email || !senha) return res.status(400).json({error: "Email e senha são obrigatórios"})

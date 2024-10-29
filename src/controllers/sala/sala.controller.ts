@@ -32,7 +32,7 @@ static async show (req: Request, res: Response){
         
         if (!sala) 
 	      return res.status(404)
-
-        return res.json(sala) 
+        const salas = sala.map(s => `Sala ${s.numero}`)
+        return res.status(200).json(salas)
     }	
 }

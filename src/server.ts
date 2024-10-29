@@ -19,7 +19,7 @@ const startServer = async () => {
   try {
     await initializeDatabase()
     
-    await seed();
+    await seed()
     console.log('Seed executado com sucesso!')
 
     app.listen(port, () => {

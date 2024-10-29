@@ -42,7 +42,7 @@ export default class AulaController{
           horario_inicio: aula.horario_inicio,
           horario_fim: aula.horario_fim,
           sala: aula.sala,
-          monitor: aula.usuario.nome
+          professor: aula.usuario.nome
         })}
 
 	      }
