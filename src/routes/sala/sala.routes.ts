@@ -6,5 +6,6 @@ const salaRoutes = Router()
 
 salaRoutes.post('/', authMiddleware, SalaController.store)
 salaRoutes.get('/', authMiddleware, SalaController.show)
+salaRoutes.delete('/', authMiddleware, SalaController.delete)
 
 export default salaRoutes
