@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import { initializeDatabase, dataBase } from './database/ormconfig'
 import seed from './database/seed'
 import routes from './routes'
-//import cors from 'cors'
+import cors from 'cors'
 //
 dotenv.config()
 const app = express()
