@@ -84,62 +84,6 @@ static async store (req: Request, res: Response){
             token })
     }
 
-    static async verify (req: Request, res: Response){
-        /*const t = localStorage.getItem('token')
-        console.log(t)
-        if (!(!t)) return res.status(409).json("Usuário já está autenticado") */
-
-        const { email } = req.body
-
-        if (!email ) return res.status(400).json({error: "Email é obrigatório"})
-
-        const usuario = await Usuario.findOneBy ({ email })
-        if (!usuario) return res.status(401).json({error: "Usuário não encontrado"})
-        const idUsuario = usuario.id
-
-        const secret = crypto.randomBytes(32).toString('hex')
-	    const token = jwt.sign({idUsuario}, secret, { expiresIn: '1h'})
-
-        localStorage.setItem('secret', secret)
-        localStorage.setItem('token', token)
-
-        //axios.defaults.headers.common['x-access-token'] = token
-
-        return res.status(200).json({
-            nome: usuario.nome, 
-            tipo: usuario.tipo, 
-            foto: usuario.idFoto,
-            token })
-    }
-
-    static async change (req: Request, res: Response){
-        const { novaSenha } = req.body
-        const t = localStorage.getItem('token')
-        console.log(t)
-        if (!(!t)) return res.status(409).json("Usuário já está autenticado")
-
-        if (!novaSenha) return res.status(400).json({error: "A senha é obrigatória"})
-
-        try {
-            const decoded: any = jwt.verify(token, 'secret'); 
-    
-            const usuario = await Usuario.findOneBy(decoded.idUsuario);
-            if (!usuario) {
-                return res.status(404).json({ error: 'Usuário não encontrado' });
-            }
-    
-            const hashSenha = await bcrypt.hash(novaSenha, 10);
-    
-            usuario.senha = hashSenha;  
-            await usuario.save();  
-    
-            return res.status(200).json({ mensagem: 'Senha atualizada com sucesso' });
-        } catch (error) {
-            // Se o token for inválido ou ocorrer outro erro
-            return res.status(400).json({ error: 'Token inválido ou expirado' });
-        }
-    }
-
     static async logout (req: Request, res:Response) {
         const idUsuario = req.headers.userId
         const usuario = await Usuario.findOneBy ({ id: Number(idUsuario) })
