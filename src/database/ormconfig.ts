@@ -5,8 +5,10 @@ import path from 'path'
 dotenv.config()
 
 const dataBase = new DataSource({
-  type: 'sqlite',
-  database: process.env.DATABASE || path.join(__dirname, '../database/database.sqlite'),
+  type: 'mongodb',
+  host: 'localhost',
+  port: 27017,
+  database: 'wizchedule',
   entities: [
     path.join(__dirname, '../models/*.ts')
   ],
