@@ -6,8 +6,8 @@ export default class Sala extends BaseEntity{
     @PrimaryGeneratedColumn()
     id!: number
 
-    @Column({ default: "" })
-    numero?: number
+    @Column()
+    numero!: number
 
     @OneToMany(() => Aula, aula => aula.sala)
     aulas!: Aula[]
